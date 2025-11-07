@@ -4,6 +4,7 @@ import { markdownToHtml } from '@/lib/markdown';
 import { DocsContent } from '@/components/docs/docs-content';
 import { TableOfContents } from '@/components/docs/table-of-contents';
 import { PageNavigation } from '@/components/docs/page-navigation';
+import { FeedbackWidget } from '@/components/docs/feedback-widget';
 
 export default async function DocPage({
   params,
@@ -78,6 +79,8 @@ export default async function DocPage({
           updatedAt={page.updatedAt}
           author={page.author}
         />
+
+        <FeedbackWidget projectId={project.id} pageId={page.id} />
 
         <PageNavigation
           previousPage={previousPage}

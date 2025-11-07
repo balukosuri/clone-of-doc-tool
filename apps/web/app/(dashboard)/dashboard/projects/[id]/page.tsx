@@ -2,7 +2,7 @@ import { db } from '@docbolt/database';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, FileText, GitBranch, Users, Settings } from 'lucide-react';
+import { Plus, FileText, GitBranch, Users, Settings, BarChart3, Code2, Sparkles, Webhook } from 'lucide-react';
 import { getDefaultUser } from '@/lib/default-user';
 
 export default async function ProjectPage({ params }: { params: { id: string } }) {
@@ -129,6 +129,18 @@ export default async function ProjectPage({ params }: { params: { id: string } }
           </Card>
         </Link>
 
+        <Link href={`/dashboard/projects/${project.id}/api`}>
+          <Card className="hover:bg-accent transition-colors cursor-pointer">
+            <CardHeader>
+              <Code2 className="h-8 w-8 mb-2 text-primary" />
+              <CardTitle className="text-lg">API Docs</CardTitle>
+              <CardDescription>
+                Upload OpenAPI/Swagger specifications
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+
         <Link href={`/dashboard/projects/${project.id}/versions`}>
           <Card className="hover:bg-accent transition-colors cursor-pointer">
             <CardHeader>
@@ -136,6 +148,30 @@ export default async function ProjectPage({ params }: { params: { id: string } }
               <CardTitle className="text-lg">Versions</CardTitle>
               <CardDescription>
                 Manage documentation versions
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+
+        <Link href={`/dashboard/projects/${project.id}/analytics`}>
+          <Card className="hover:bg-accent transition-colors cursor-pointer">
+            <CardHeader>
+              <BarChart3 className="h-8 w-8 mb-2 text-primary" />
+              <CardTitle className="text-lg">Analytics</CardTitle>
+              <CardDescription>
+                View insights and metrics
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+
+        <Link href={`/dashboard/projects/${project.id}/changelog`}>
+          <Card className="hover:bg-accent transition-colors cursor-pointer">
+            <CardHeader>
+              <Sparkles className="h-8 w-8 mb-2 text-primary" />
+              <CardTitle className="text-lg">Changelog</CardTitle>
+              <CardDescription>
+                Track updates and changes
               </CardDescription>
             </CardHeader>
           </Card>
@@ -153,13 +189,25 @@ export default async function ProjectPage({ params }: { params: { id: string } }
           </Card>
         </Link>
 
+        <Link href={`/dashboard/projects/${project.id}/webhooks`}>
+          <Card className="hover:bg-accent transition-colors cursor-pointer">
+            <CardHeader>
+              <Webhook className="h-8 w-8 mb-2 text-primary" />
+              <CardTitle className="text-lg">Webhooks</CardTitle>
+              <CardDescription>
+                Configure event notifications
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+
         <Link href={`/dashboard/projects/${project.id}/settings`}>
           <Card className="hover:bg-accent transition-colors cursor-pointer">
             <CardHeader>
               <Settings className="h-8 w-8 mb-2 text-primary" />
               <CardTitle className="text-lg">Settings</CardTitle>
               <CardDescription>
-                Configure project settings
+                Configure branding and settings
               </CardDescription>
             </CardHeader>
           </Card>
