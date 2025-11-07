@@ -1,30 +1,16 @@
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
 import { db } from '@docbolt/database';
 import { ProjectsList } from '@/components/dashboard/projects-list';
 import { CreateProjectDialog } from '@/components/dashboard/create-project-dialog';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getDefaultUser } from '@/lib/default-user';
 
 export default async function ProjectsPage() {
-  const session = await auth();
-  if (!session) {
-    redirect('/auth/signin');
-  }
+  const user = getDefaultUser();
 
   const projects = await db.project.findMany({
-    where: {
-      members: {
-        some: {
-          userId: session.user.id,
-        },
-      },
-    },
     include: {
-      members: {
-        where: { userId: session.user.id },
-        select: { role: true },
-      },
+      members: true,
       _count: {
         select: {
           pages: true,

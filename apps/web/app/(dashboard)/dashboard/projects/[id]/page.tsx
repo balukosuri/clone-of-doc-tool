@@ -1,23 +1,19 @@
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
 import { db } from '@docbolt/database';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, FileText, GitBranch, Users, Settings } from 'lucide-react';
+import { getDefaultUser } from '@/lib/default-user';
 
 export default async function ProjectPage({ params }: { params: { id: string } }) {
-  const session = await auth();
-  if (!session) {
-    redirect('/auth/signin');
-  }
+  const user = getDefaultUser();
 
   const project = await db.project.findFirst({
     where: {
       id: params.id,
       members: {
         some: {
-          userId: session.user.id,
+          userId: user.id,
         },
       },
     },
@@ -48,7 +44,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
     redirect('/dashboard/projects');
   }
 
-  const userMember = project.members.find((m) => m.user.id === session.user.id);
+  const userMember = project.members.find((m) => m.user.id === user.id);
   const role = userMember?.role || 'VIEWER';
 
   return (

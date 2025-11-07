@@ -31,11 +31,8 @@ export default function HomePage() {
             <Link href="/pricing" className="text-sm hover:text-primary">
               Pricing
             </Link>
-            <Link href="/auth/signin">
-              <Button variant="ghost" size="sm">Sign In</Button>
-            </Link>
-            <Link href="/auth/signup">
-              <Button size="sm">Get Started</Button>
+            <Link href="/dashboard/projects">
+              <Button size="sm">Go to Dashboard</Button>
             </Link>
           </nav>
         </div>
@@ -52,12 +49,12 @@ export default function HomePage() {
           Create, manage, and publish beautiful docs with ease.
         </p>
         <div className="flex items-center justify-center space-x-4">
-          <Link href="/auth/signup">
+          <Link href="/dashboard/projects">
             <Button size="lg" className="text-lg px-8">
-              Get Started Free
+              Go to Dashboard
             </Button>
           </Link>
-          <Link href="/demo">
+          <Link href="/dashboard/projects">
             <Button size="lg" variant="outline" className="text-lg px-8">
               View Demo
             </Button>
@@ -123,9 +120,9 @@ export default function HomePage() {
           <p className="text-lg text-muted-foreground mb-8">
             Sign up now and ship better docs today.
           </p>
-          <Link href="/auth/signup">
+          <Link href="/dashboard/projects">
             <Button size="lg" className="text-lg px-8">
-              Start Free Trial
+              Go to Dashboard
             </Button>
           </Link>
         </div>

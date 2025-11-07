@@ -1,25 +1,20 @@
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
 import { db } from '@workspace/database';
 import { CreateVersionDialog } from '@/components/versions/create-version-dialog';
 import { VersionsList } from '@/components/versions/versions-list';
+import { getDefaultUser } from '@/lib/default-user';
 
 export default async function VersionsPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const session = await auth();
-
-  if (!session?.user) {
-    redirect('/auth/signin');
-  }
+  const user = getDefaultUser();
 
   // Check if user has access to this project
   const projectMember = await db.projectMember.findFirst({
     where: {
       projectId: params.id,
-      userId: session.user.id,
+      userId: user.id,
     },
     include: {
       project: true,

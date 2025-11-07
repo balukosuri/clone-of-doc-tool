@@ -1,21 +1,17 @@
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
 import { db } from '@docbolt/database';
 import Link from 'next/link';
 import { PageEditor } from '@/components/pages/page-editor';
+import { getDefaultUser } from '@/lib/default-user';
 
 export default async function NewPagePage({ params }: { params: { id: string } }) {
-  const session = await auth();
-  if (!session) {
-    redirect('/auth/signin');
-  }
+  const user = getDefaultUser();
 
   const project = await db.project.findFirst({
     where: {
       id: params.id,
       members: {
         some: {
-          userId: session.user.id,
+          userId: user.id,
           role: { in: ['OWNER', 'EDITOR'] },
         },
       },

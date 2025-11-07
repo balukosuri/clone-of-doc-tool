@@ -1,23 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { db } from '@workspace/database';
 import slugify from 'slugify';
+import { getDefaultUser } from '@/lib/default-user';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     // Check if user has access to this project
     const projectMember = await db.projectMember.findFirst({
       where: {
         projectId: params.id,
-        userId: session.user.id,
+        userId: user.id,
       },
     });
 
@@ -57,16 +54,13 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     // Check if user has owner or editor role
     const projectMember = await db.projectMember.findFirst({
       where: {
         projectId: params.id,
-        userId: session.user.id,
+        userId: user.id,
         role: {
           in: ['OWNER', 'EDITOR'],
         },

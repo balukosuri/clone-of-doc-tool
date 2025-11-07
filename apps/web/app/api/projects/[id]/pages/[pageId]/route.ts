@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { db } from '@docbolt/database';
+import { getDefaultUser } from '@/lib/default-user';
 
 // GET /api/projects/:id/pages/:pageId
 export async function GET(
@@ -8,10 +8,7 @@ export async function GET(
   { params }: { params: { id: string; pageId: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     const page = await db.page.findFirst({
       where: {
@@ -51,15 +48,12 @@ export async function PATCH(
   { params }: { params: { id: string; pageId: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     const member = await db.projectMember.findFirst({
       where: {
         projectId: params.id,
-        userId: session.user.id,
+        userId: user.id,
         role: { in: ['OWNER', 'EDITOR'] },
       },
     });
@@ -112,15 +106,12 @@ export async function DELETE(
   { params }: { params: { id: string; pageId: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     const member = await db.projectMember.findFirst({
       where: {
         projectId: params.id,
-        userId: session.user.id,
+        userId: user.id,
         role: { in: ['OWNER', 'EDITOR'] },
       },
     });

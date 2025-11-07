@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { db } from '@docbolt/database';
+import { getDefaultUser } from '@/lib/default-user';
 
 // GET /api/projects/:id
 export async function GET(
@@ -8,17 +8,14 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     const project = await db.project.findFirst({
       where: {
         id: params.id,
         members: {
           some: {
-            userId: session.user.id,
+            userId: user.id,
           },
         },
       },
@@ -65,16 +62,13 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     // Check if user has access
     const member = await db.projectMember.findFirst({
       where: {
         projectId: params.id,
-        userId: session.user.id,
+        userId: user.id,
         role: { in: ['OWNER', 'EDITOR'] },
       },
     });
@@ -114,16 +108,13 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     // Check if user is owner
     const member = await db.projectMember.findFirst({
       where: {
         projectId: params.id,
-        userId: session.user.id,
+        userId: user.id,
         role: 'OWNER',
       },
     });

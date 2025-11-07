@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { db } from '@docbolt/database';
+import { getDefaultUser } from '@/lib/default-user';
 
 // GET /api/projects/:id/pages - List all pages for a project
 export async function GET(
@@ -8,16 +8,13 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     // Check if user has access to this project
     const member = await db.projectMember.findFirst({
       where: {
         projectId: params.id,
-        userId: session.user.id,
+        userId: user.id,
       },
     });
 
@@ -66,16 +63,13 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     // Check if user has access to edit
     const member = await db.projectMember.findFirst({
       where: {
         projectId: params.id,
-        userId: session.user.id,
+        userId: user.id,
         role: { in: ['OWNER', 'EDITOR'] },
       },
     });
@@ -119,7 +113,7 @@ export async function POST(
         title,
         slug: slug || title.toLowerCase().replace(/[^\w]+/g, '-'),
         content: content || '',
-        authorId: session.user.id,
+        authorId: user.id,
         parentId: parentId || null,
         status: status || 'DRAFT',
       },

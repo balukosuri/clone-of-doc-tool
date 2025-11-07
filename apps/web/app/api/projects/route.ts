@@ -1,29 +1,14 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { db } from '@docbolt/database';
 import { slugify } from '@/lib/utils';
+import { getDefaultUser } from '@/lib/default-user';
 
-// GET /api/projects - List all projects for the current user
+// GET /api/projects - List all projects
 export async function GET() {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const projects = await db.project.findMany({
-      where: {
-        members: {
-          some: {
-            userId: session.user.id,
-          },
-        },
-      },
       include: {
-        members: {
-          where: { userId: session.user.id },
-          select: { role: true },
-        },
+        members: true,
         _count: {
           select: {
             pages: true,
@@ -50,10 +35,7 @@ export async function GET() {
 // POST /api/projects - Create a new project
 export async function POST(request: Request) {
   try {
-    const session = await auth();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const user = getDefaultUser();
 
     const body = await request.json();
     const { name, description } = body;
@@ -87,7 +69,7 @@ export async function POST(request: Request) {
         description: description || null,
         members: {
           create: {
-            userId: session.user.id,
+            userId: user.id,
             role: 'OWNER',
           },
         },

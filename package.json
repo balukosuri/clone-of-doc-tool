@@ -18,6 +18,8 @@
     "db:push": "turbo run db:push",
     "db:migrate": "turbo run db:migrate",
     "db:studio": "turbo run db:studio",
+    "db:seed": "tsx packages/database/seed.ts",
+    "setup": "pnpm install && docker-compose up -d && pnpm db:push && pnpm db:seed",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "test": "turbo run test"

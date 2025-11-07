@@ -1,18 +1,13 @@
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
 import { DashboardNav } from '@/components/dashboard/dashboard-nav';
 import { UserNav } from '@/components/dashboard/user-nav';
+import { getDefaultUser } from '@/lib/default-user';
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-
-  if (!session) {
-    redirect('/auth/signin');
-  }
+  const user = getDefaultUser();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -20,7 +15,7 @@ export default async function DashboardLayout({
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <DashboardNav />
-          <UserNav user={session.user} />
+          <UserNav user={user} />
         </div>
       </header>
 
